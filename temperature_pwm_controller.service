@@ -1,0 +1,19 @@
+# Este es un archivo de servicio para el controlador PWM basado en temperatura
+# que se ejecutará automáticamente al arrancar la Raspberry Pi.
+# debe estar ubicado en /etc/systemd/system/temperature_pwm_controller.service
+
+[Unit]
+Description=Controlador de PWM basado en temperatura
+After=multi-user.target
+
+[Service]
+ExecStartPre=sleep 30
+ExecStart=/usr/bin/python3 /home/pi/ventilador_pwm/temperature_pwm_controller.py
+WorkingDirectory=/home/pi/ventilador_pwm
+StandardOutput=syslog
+StandardError=syslog
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
