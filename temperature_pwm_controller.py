@@ -72,8 +72,9 @@ def calcular_ciclo_de_trabajo(temp, temp_min, temp_max, ciclo_min, ciclo_max, ci
             return 0
         elif temp > temp_max:
             return 100
-        elif temp_min <= temp <= temp_max:
-            if temp > temperatura_anterior + hysteresis or temp < temperatura_anterior - hysteresis:
+        elif temp_min <= temp:
+            if (temp > (temperatura_anterior + hysteresis)) or (temp < (temperatura_anterior - hysteresis)):
+                print_debug(f"***Superada histéresis. Nueva temperatura: {temp:.2f}ºC. Nuevo ciclo de trabajo: {ciclo_de_trabajo:.0f}%. La temperatura anterior era {temperatura_anterior:.2f} °C. El ciclo anterior era de  {ciclo_de_trabajo_anterior:.0f}%")
                 ciclo = (temp - temp_min) * (ciclo_max - ciclo_min) / (temp_max - temp_min) + ciclo_min
                 ciclo = max(ciclo_min, min(ciclo, ciclo_max))
                 return round(ciclo)
@@ -106,7 +107,8 @@ try:
     signal.signal(signal.SIGTERM, parar_ventilador)
 
     pwm.start(100)
-    time.sleep(1) 
+    time.sleep(1)
+    pwm.change_duty_cycle(0)
 
     while True:
         temp = psutil.sensors_temperatures()['cpu_thermal'][0].current
@@ -114,6 +116,10 @@ try:
 
         if tiempo >= intervalo_de_prueba and debug is True:
             mensaje = f"La temperatura de la CPU es {temp:.2f} °C. El ciclo de trabajo es de {ciclo_de_trabajo:.0f}%"
+            print_debug(mensaje)
+            mensaje = f"La temperatura anterior era {temperatura_anterior:.2f} °C. El ciclo anterior era de  {ciclo_de_trabajo_anterior:.0f}%"
+            print_debug(mensaje)
+            mensaje = f"--------------------------------------------------------------------------------------------"
             print_debug(mensaje)
             tiempo = 0
         else:
