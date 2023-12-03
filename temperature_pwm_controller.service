@@ -8,8 +8,8 @@ After=multi-user.target
 
 [Service]
 ExecStartPre=sleep 30
-ExecStart=/usr/bin/python3 /home/pi/ventilador_pwm/temperature_pwm_controller.py
-WorkingDirectory=/home/pi/ventilador_pwm
+ExecStart=/usr/bin/python3 /home/pi/raspberry-fan/temperature_pwm_controller.py
+WorkingDirectory=/home/pi/raspberry-fan
 StandardOutput=syslog
 StandardError=syslog
 Restart=always
